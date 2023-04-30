@@ -1,0 +1,17 @@
+.Explorer {
+  margin-top: 3%;
+  margin-left: 3%;
+  display: inline-block;
+  width: auto;
+  background-color: darkcyan;
+}
+
+.Inputs {
+  margin-left: 7.5%;
+  margin-top: 3%;
+}
+
+.ExplorerStructure {
+  margin-left: 1%;
+  margin-top: 1%;
+}
