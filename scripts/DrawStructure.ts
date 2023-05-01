@@ -1,16 +1,16 @@
 //Временная заглушка
-export function DrawStructure(filesPathes : string[]) : string
+export function DrawStructure(pathes : string[]) : string
 {
-    let files : string ="";
-    if (filesPathes != null) 
+    let drawPathes : string ="";
+    if (pathes != null) 
     {
-        for (let i = 0; i < filesPathes.length; i++) 
+        for (let i = 0; i < pathes.length; i++) 
         {
-            files += filesPathes[i] + " ";
+            drawPathes += pathes[i] + " ";
         }
     }
     
-    return files;
+    return drawPathes;
 }
 
 class FileSystemStructure
