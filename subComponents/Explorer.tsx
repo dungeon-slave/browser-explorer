@@ -2,16 +2,17 @@ import { useState } from "react";
 import Inputs from "./Inputs";
 import ExplorerStructure from "./ExplorerStructure";
 import React from "react";
+import { Data } from "../scripts/Data";
 
 function Explorer()
 {
-    const [files, setTitle] = useState<string[]>();
+    const [data, setData] = useState<Data>(new Data());
 
     return(
         <div className="Explorer">
             <>
-                <Inputs setTitle={setTitle}/>
-                <ExplorerStructure files={files as string[]}/>
+                <Inputs setData={setData} data={data}/>
+                <ExplorerStructure data={data}/>
             </>
         </div>
     );

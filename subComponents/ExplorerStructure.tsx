@@ -1,12 +1,19 @@
-import React from "react";
-import { DrawStructure } from "../scripts/DrawStructure";
+import React, { useEffect } from "react";
+import { Data } from "../scripts/Data";
 
-function ExplorerStructure(props : {files: string[]})
+function ExplorerStructure(props : {data: Data})
 {
+    useEffect(() => {}, [props.data]);
+
     return(
         <div className="ExplorerStructure">
             <>
-                {DrawStructure(props.files)}
+                <ul>
+                {props.data.pathes.map(path =>
+                    <li key={path}>
+                        ${path}
+                    </li>)}
+                </ul>
             </>
         </div>
     );

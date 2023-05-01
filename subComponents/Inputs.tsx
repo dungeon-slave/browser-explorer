@@ -1,29 +1,39 @@
 import '../styles/Explorer.css';
 import * as React from "react";
-import { getDir } from '../scripts/FgetDirName';
+import { getFilesPathes } from '../scripts/getFilesPathes';
+import { Data } from '../scripts/Data';
+import { useEffect, useRef } from 'react';
 
-function Inputs(props : {setTitle : any}) 
+function Inputs(props : {setData : React.Dispatch<React.SetStateAction<Data>>, data : Data}) 
 {
   //------------------------------------------------------
-    // Используется для прокидывания атрибутов в инпут
-    // Данные атрибуты нужны для возможности загрузки целой папки
-    const ref = React.useRef<HTMLInputElement>(null);
+    // Используется для прокидывания webkitdirectory в инпут
+    // Данный атрибут нужен для возможности загрузки целой папки
+    const ref = useRef<HTMLInputElement>(null);
 
-    React.useEffect(() => 
+    useEffect(() => 
     {
-      if (ref.current !== null) {
-        ref.current.setAttribute("webkitdirectory", "");
-      }
+      if (ref.current !== null) { ref.current.setAttribute("webkitdirectory", ""); }
     }, [ref]);
   //------------------------------------------------------
 
+  const inputHandler = () => 
+  {
+    const pathes = getFilesPathes();
+
+    props.setData(prevState => {
+        const data = Object.assign({}, prevState);
+        data.pathes = pathes;
+        return data;
+    });
+  }
+
   return (
     <div className="Inputs">
-      <input id="folderInput" type="file" onChange={() => props.setTitle(getDir)} ref={ref}/>
+      <input id="folderInput" type="file" onChange={inputHandler} ref={ref}/>
 
-      {/*<button onClick={() => props.setTitle(getDir)}>Open file/folder</button>*/}
-      <button /*onClick={}*/>Add file</button>
-      <button /*onClick={}*/>Add folder</button>
+      <button onClick={() => {}}>Add file</button>
+      <button onClick={() => {}}>Add folder</button>
     </div>
   );
 }
