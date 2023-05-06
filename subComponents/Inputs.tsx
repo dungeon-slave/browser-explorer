@@ -1,41 +1,33 @@
-import '../styles/Explorer.css';
-import * as React from "react";
-import { getFilesPathes } from '../scripts/getFilesPathes';
-import { Data } from '../scripts/Data';
-import { useEffect, useRef } from 'react';
+import React, { Dispatch, SetStateAction, DragEvent } from "react";
+import "../styles/dropzone.css";
+import { CLocalRootCreator } from "../classes/VirtualFilesSystem/CLocalRootCreator";
 
-function Inputs(props : {setData : React.Dispatch<React.SetStateAction<Data>>, data : Data}) 
+function Inputs(props : { setRenderState : Dispatch<SetStateAction<boolean>> })
 {
-  //------------------------------------------------------
-    // Используется для прокидывания webkitdirectory в инпут
-    // Данный атрибут нужен для возможности загрузки целой папки
-    const ref = useRef<HTMLInputElement>(null);
-
-    useEffect(() => 
+    const inputHandler = (event : DragEvent<HTMLDivElement>) => 
     {
-      if (ref.current !== null) { ref.current.setAttribute("webkitdirectory", ""); }
-    }, [ref]);
-  //------------------------------------------------------
+        event.preventDefault();
 
-  const inputHandler = () => 
-  {
-    const pathes = getFilesPathes();
+        const item : FileSystemEntry | null = event.dataTransfer.items[0].webkitGetAsEntry();
 
-    props.setData(prevState => {
-        const data = Object.assign({}, prevState);
-        data.pathes = pathes;
-        return data;
-    });
-  }
+        if (item) 
+        { 
+            let rootCreator : CLocalRootCreator = new CLocalRootCreator(item);
+            console.log(rootCreator.createRoot());
+            props.setRenderState((prevState) => !prevState); 
+        }
+    }
 
-  return (
-    <div className="Inputs">
-      <input id="folderInput" type="file" onChange={inputHandler} ref={ref}/>
+    return(
+        <div>
+            <div draggable id="dropzone" onDrop={inputHandler} onDragOver={(event) => { event.preventDefault(); }}>
+                <div>Drop Files Here</div>
+            </div>
 
-      <button onClick={() => {}}>Add file</button>
-      <button onClick={() => {}}>Add folder</button>
-    </div>
-  );
+            <button onClick={() => {}}>Add file</button>
+            <button onClick={() => {}}>Add folder</button>
+        </div>
+    );
 }
 
 export default Inputs;

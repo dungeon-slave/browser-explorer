@@ -1,18 +1,11 @@
 import React from "react";
-import { Data } from "../scripts/Data";
+import { root } from "../root";
 
-function ExplorerStructure(props : {data: Data})
+function ExplorerStructure()
 {
     return(
         <div className="ExplorerStructure">
-            <>
-                <ul>
-                    {props.data.pathes.map(path =>
-                        <li key={path}>
-                            ${path}
-                        </li>)}
-                </ul>
-            </>
+            <p>{root.name}</p>
         </div>
     );
 }

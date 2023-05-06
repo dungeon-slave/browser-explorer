@@ -20,7 +20,7 @@ export class CLocalRootCreator implements IRootCreator
         this._root = new CDirectory(entry.isDirectory ? entry.name : "Empty root", [], []);
     }
 
-    private buildRoot(currEntry: FileSystemEntry, currRoot: CDirectory) 
+    private buildRoot(currEntry: FileSystemEntry, currRoot: CDirectory) : void
     {
         if (currEntry.isDirectory) 
         {

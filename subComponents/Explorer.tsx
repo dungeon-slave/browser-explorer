@@ -1,18 +1,17 @@
 import { useState } from "react";
-import Inputs from "./Inputs";
 import ExplorerStructure from "./ExplorerStructure";
 import React from "react";
-import { Data } from "../scripts/Data";
+import Inputs from "./Inputs";
 
 function Explorer()
 {
-    const [data, setData] = useState<Data>(new Data());
+    const[renderState, setRenderState] = useState<boolean>(false);
 
     return(
         <div className="Explorer">
             <>
-                <Inputs setData={setData} data={data}/>
-                <ExplorerStructure data={data}/>
+                <Inputs setRenderState={setRenderState}/>
+                <ExplorerStructure/>
             </>
         </div>
     );
