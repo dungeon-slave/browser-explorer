@@ -1,5 +1,5 @@
 import { IRootCreator } from "../../interfaces/IRootCreator";
-import CDirectory from "../FileSystemElements/СDirectory";
+import CDirectory from "../FileSystemElements/CDirectory";
 import CFile from "../FileSystemElements/CFile";
 
 export class CLocalRootCreator implements IRootCreator
@@ -35,7 +35,7 @@ export class CLocalRootCreator implements IRootCreator
                     entries.forEach((entry) => { this.buildRoot(entry, subDir); });
                 }
             });
-        } 
+        }
         else
         {
             const fileEntry = (currEntry as FileSystemFileEntry);

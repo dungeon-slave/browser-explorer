@@ -1,4 +1,4 @@
-import CDirectory from "../classes/FileSystemElements/СDirectory"
+import CDirectory from "../classes/FileSystemElements/CDirectory"
 
 export interface IRootCreator
 {
