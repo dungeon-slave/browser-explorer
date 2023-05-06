@@ -1,6 +1,6 @@
-import { FileSystemElement } from "./FileSystemElement";
+import { CFileSystemElement } from "./CFileSystemElement";
 
-export class File extends FileSystemElement
+export default class CFile extends CFileSystemElement
 {
     private _text : string;
 
@@ -14,9 +14,9 @@ export class File extends FileSystemElement
         this._text = value;
     }
 
-    constructor(path : string, text : string)
+    constructor(name : string, text : string)
     {
-        super(path, false);
+        super(name, false);
         this._text = text;
     }
 }
