@@ -13,8 +13,6 @@ export default class CLocalStorageWorker
 
     public static loadProject() : void
     {
-        let newRoot = JSON.parse(localStorage.getItem('VirtualFS') || '{}');
-
-        CRoot.root = new CDirectory(newRoot._name, newRoot._subDirectories, newRoot._files);//TODO Костыль
+        CRoot.root = Object.setPrototypeOf(JSON.parse(localStorage.getItem('VirtualFS') || '{}'), CDirectory.prototype);
     }
 }
