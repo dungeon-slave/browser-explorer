@@ -1,6 +1,8 @@
 import React, { Dispatch, SetStateAction, DragEvent } from "react";
 import "../styles/dropzone.css";
 import { CLocalRootCreator } from "../classes/VirtualFilesSystem/CLocalRootCreator";
+import CRoot from "../classes/VirtualFilesSystem/CRoot";
+import CLocalStorageWorker from "../classes/VirtualFilesSystem/CLocalStorageWorker";
 
 function Inputs(props : { setRenderState : Dispatch<SetStateAction<boolean>> })
 {
@@ -13,7 +15,7 @@ function Inputs(props : { setRenderState : Dispatch<SetStateAction<boolean>> })
         if (item) 
         { 
             let rootCreator : CLocalRootCreator = new CLocalRootCreator(item);
-            console.log(rootCreator.createRoot());
+            CRoot.root = rootCreator.createRoot();
             props.setRenderState((prevState) => !prevState); 
         }
     }
@@ -24,7 +26,8 @@ function Inputs(props : { setRenderState : Dispatch<SetStateAction<boolean>> })
                 <div>Drop Files Here</div>
             </div>
 
-            <button onClick={() => {}}>Add file</button>
+            <button onClick={() => CLocalStorageWorker.saveProject()}>Save project</button>
+            <button onClick={() => {props.setRenderState((prevState) => !prevState)}}>Add file</button>
             <button onClick={() => {}}>Add folder</button>
         </div>
     );

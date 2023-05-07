@@ -1,11 +1,22 @@
 import React from "react";
-import { root } from "../root";
+import CRoot from "../classes/VirtualFilesSystem/CRoot";
+import CLocalStorageWorker from "../classes/VirtualFilesSystem/CLocalStorageWorker";
 
 function ExplorerStructure()
 {
+    const loader = () => //TODO Костыль
+    {
+        if (CRoot.root.name === "") 
+        {
+            CLocalStorageWorker.loadProject();
+        }
+
+        return CRoot.root.name;
+    }
+
     return(
         <div className="ExplorerStructure">
-            <p>{root.name}</p>
+            <p>{loader()}</p>
         </div>
     );
 }

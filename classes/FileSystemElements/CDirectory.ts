@@ -15,7 +15,6 @@ export default class CDirectory extends CFileSystemElement
         this._files = value;
     }
 
-
     private _subDirectories : CDirectory[];
 
     public get subDirectories() : CDirectory[] 

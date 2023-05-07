@@ -7,7 +7,7 @@ export class CLocalRootCreator implements IRootCreator
     private _entry : FileSystemEntry;
     private _root : CDirectory;
 
-    public createRoot(): CDirectory 
+    public createRoot() : CDirectory 
     {
         this.buildRoot(this._entry, this._root);
 
@@ -20,7 +20,7 @@ export class CLocalRootCreator implements IRootCreator
         this._root = new CDirectory(entry.isDirectory ? entry.name : "Empty root", [], []);
     }
 
-    private buildRoot(currEntry: FileSystemEntry, currRoot: CDirectory) : void
+    private buildRoot(currEntry : FileSystemEntry, currRoot: CDirectory) : void
     {
         if (currEntry.isDirectory) 
         {
@@ -41,7 +41,7 @@ export class CLocalRootCreator implements IRootCreator
             const fileEntry = (currEntry as FileSystemFileEntry);
             const reader = new FileReader();
       
-            fileEntry.file((file: File) => {
+            fileEntry.file((file : File) => {
       
                 reader.onload = () => {
                     currRoot.files.push(new CFile(fileEntry.name, reader.result as string));

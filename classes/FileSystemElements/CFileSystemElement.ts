@@ -2,7 +2,6 @@ export class CFileSystemElement
 {
     constructor(name : string, isDirectory : boolean)
     {
-        //this._path = path;
         this._isDirectory = isDirectory;
         this._name = name; //not finished yet
     }
@@ -18,20 +17,6 @@ export class CFileSystemElement
     {
         this._name = value;
     }
-
-
-    // private _path : string;
-
-    // public get path() : string 
-    // {
-    //     return this._path;
-    // }
-
-    // public set path(value : string) 
-    // {
-    //     this._path = value;
-    // }
-
 
     private _isDirectory : boolean;
 
