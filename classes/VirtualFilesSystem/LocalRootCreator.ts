@@ -1,13 +1,13 @@
 import { IRootCreator } from "../../interfaces/IRootCreator";
-import CDirectory from "../FileSystemElements/CDirectory";
-import CFile from "../FileSystemElements/CFile";
+import Directory from "../FileSystemElements/Directory";
+import File from "../FileSystemElements/File";
 
-export class CLocalRootCreator implements IRootCreator
+export class LocalRootCreator implements IRootCreator
 {
     private _entry : FileSystemEntry;
-    private _root : CDirectory;
+    private _root  : Directory;
 
-    public createRoot() : CDirectory 
+    public createRoot() : Directory 
     {
         this.buildRoot(this._entry, this._root);
 
@@ -17,14 +17,14 @@ export class CLocalRootCreator implements IRootCreator
     constructor(entry : FileSystemEntry)
     {
         this._entry = entry;
-        this._root = new CDirectory(entry.isDirectory ? entry.name : "Empty root", [], []);
+        this._root = new Directory(entry.isDirectory ? entry.name : "Empty root", [], []);
     }
 
-    private buildRoot(currEntry : FileSystemEntry, currRoot: CDirectory) : void
+    private buildRoot(currEntry : FileSystemEntry, currRoot: Directory) : void
     {
         if (currEntry.isDirectory) 
         {
-            const subDir = new CDirectory(currEntry.name, [], []);
+            const subDir = new Directory(currEntry.name, [], []);
             const dirReader = (currEntry as FileSystemDirectoryEntry).createReader();
 
             currRoot.subDirectories.push(subDir);
@@ -41,10 +41,10 @@ export class CLocalRootCreator implements IRootCreator
             const fileEntry = (currEntry as FileSystemFileEntry);
             const reader = new FileReader();
       
-            fileEntry.file((file : File) => {
+            fileEntry.file((file : globalThis.File) => {
       
                 reader.onload = () => {
-                    currRoot.files.push(new CFile(fileEntry.name, reader.result as string));
+                    currRoot.files.push(new File(fileEntry.name, reader.result as string));
                 };
       
                 reader.readAsText(file);

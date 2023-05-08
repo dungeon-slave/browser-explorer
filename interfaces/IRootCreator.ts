@@ -1,6 +1,6 @@
-import CDirectory from "../classes/FileSystemElements/CDirectory"
+import Directory from "../classes/FileSystemElements/Directory"
 
 export interface IRootCreator
 {
-    createRoot() : CDirectory;
+    createRoot() : Directory;
 }

@@ -5,7 +5,7 @@ import Inputs from "./Inputs";
 
 function Explorer()
 {
-    const[renderState, setRenderState] = useState<boolean>(false);
+    const[renderState, setRenderState] = useState<boolean>(false);//TODO ненужный renderState
 
     return(
         <div className="Explorer">

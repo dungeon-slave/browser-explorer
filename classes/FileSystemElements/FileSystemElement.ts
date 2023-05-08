@@ -1,9 +1,9 @@
-export class CFileSystemElement
+export class FileSystemElement
 {
     constructor(name : string, isDirectory : boolean)
     {
         this._isDirectory = isDirectory;
-        this._name = name; //not finished yet
+        this._name = name;
     }
 
     private _name : string;

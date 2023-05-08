@@ -1,6 +1,6 @@
-import { CFileSystemElement } from "./CFileSystemElement";
+import { FileSystemElement } from "./FileSystemElement";
 
-export default class CFile extends CFileSystemElement
+export default class File extends FileSystemElement
 {
     private _text : string;
 

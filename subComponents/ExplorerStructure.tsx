@@ -1,17 +1,17 @@
 import React from "react";
-import CRoot from "../classes/VirtualFilesSystem/CRoot";
-import CLocalStorageWorker from "../classes/VirtualFilesSystem/CLocalStorageWorker";
+import VirtualFileSystemInstance from "../classes/VirtualFilesSystem/VirtualFileSystemInstance";
+import LocalStorageWorker from "../classes/VirtualFilesSystem/LocalStorageWorker";
 
 function ExplorerStructure()
 {
     const loader = () => //TODO Костыль
     {
-        if (CRoot.root.name === "") 
+        if (VirtualFileSystemInstance.root.name === "") 
         {
-            CLocalStorageWorker.loadProject();
+            LocalStorageWorker.loadProject();
         }
 
-        return CRoot.root.name;
+        return VirtualFileSystemInstance.root.name;
     }
 
     return(
