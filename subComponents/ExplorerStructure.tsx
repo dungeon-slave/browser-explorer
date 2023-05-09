@@ -1,22 +1,65 @@
-import React from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import VirtualFileSystemInstance from "../classes/VirtualFilesSystem/VirtualFileSystemInstance";
-import LocalStorageWorker from "../classes/VirtualFilesSystem/LocalStorageWorker";
+import Directory from "../classes/FileSystemElements/Directory";
+import { FileSystemElement } from "../classes/FileSystemElements/FileSystemElement";
+import File from "../classes/FileSystemElements/File";
 
-function ExplorerStructure()
+// const loader = () => //TODO Костыль
+// {
+//     if (VirtualFileSystemInstance.root.name === "") 
+//     {
+//         LocalStorageWorker.loadProject();
+//     }
+
+//     return VirtualFileSystemInstance.root.name;
+// }
+
+function ExplorerStructure() 
 {
-    const loader = () => //TODO Костыль
+    const drawer = (element: FileSystemElement): JSX.Element => 
     {
-        if (VirtualFileSystemInstance.root.name === "") 
+        const stack: FileSystemElement[] = [element];
+        const elements: JSX.Element[] = [];
+    
+        do
         {
-            LocalStorageWorker.loadProject();
-        }
-
-        return VirtualFileSystemInstance.root.name;
+            const currentElement = stack.pop();
+    
+            if (currentElement?.isDirectory) 
+            {
+                let dirElement = currentElement as Directory;
+    
+                elements.push(
+                    <div key={dirElement.name}>
+                        <p>{dirElement.name}</p>
+                    </div>
+                );
+    
+                dirElement.files.forEach((file: File) => {
+                    stack.push(file);
+                });
+                dirElement.subDirectories.forEach((directory: Directory) => {
+                    stack.push(directory);
+                });
+            }
+            else 
+            {
+                let fileElement = currentElement as File;
+    
+                elements.push(
+                    <div key={fileElement.name}>
+                        <p>{fileElement.name}</p>
+                    </div>
+                );
+            }
+        } while(stack.length > 0);
+    
+        return <>{elements}</>;
     }
 
-    return(
+    return (
         <div className="ExplorerStructure">
-            <p>{loader()}</p>
+            {drawer(VirtualFileSystemInstance.root)}
         </div>
     );
 }
