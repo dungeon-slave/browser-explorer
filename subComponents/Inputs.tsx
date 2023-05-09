@@ -6,28 +6,28 @@ import LocalStorageWorker from "../classes/VirtualFilesSystem/LocalStorageWorker
 
 function Inputs(props : { setRenderState : Dispatch<SetStateAction<boolean>> })
 {
-    const inputHandler = (event : DragEvent<HTMLDivElement>) => 
+    const inputHandler = async (event : DragEvent<HTMLDivElement>) => 
     {
         event.preventDefault();
 
         const item : FileSystemEntry | null = event.dataTransfer.items[0].webkitGetAsEntry();
 
-        if (item) 
+        if (item)
         { 
             let rootCreator : LocalRootCreator = new LocalRootCreator(item);
-            VirtualFileSystemInstance.root = rootCreator.createRoot();
+            VirtualFileSystemInstance.root = await rootCreator.newRoot();
             props.setRenderState((prevState) => !prevState); 
         }
     }
 
     return(
         <div>
-            <div draggable id="dropzone" onDrop={inputHandler} onDragOver={(event) => { event.preventDefault(); }}>
+            <div draggable id="dropzone" onDrop={async (event) => await inputHandler(event)} onDragOver={(event) => { event.preventDefault(); }}>
                 <div>Drop Files Here</div>
             </div>
 
             <button onClick={() => LocalStorageWorker.saveProject()}>Save project</button>
-            <button onClick={() => {props.setRenderState((prevState) => !prevState)}}>Add file</button>
+            <button onClick={() => {props.setRenderState((prevState) => !prevState)}}>Update state</button>
             <button onClick={() => {}}>Add folder</button>
         </div>
     );
