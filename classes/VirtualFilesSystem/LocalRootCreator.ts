@@ -5,50 +5,58 @@ import File from "../FileSystemElements/File";
 export class LocalRootCreator implements IRootCreator
 {
     private _entry : FileSystemEntry;
-    private _root  : Directory;
+    private _root  : Directory | null = null;
 
-    public createRoot() : Directory 
+    public async newRoot() : Promise<Directory>
     {
-        this.buildRoot(this._entry, this._root);
-
+        if (!this._root) 
+        {
+            this._root = await this.buildRoot(this._entry);
+        }
         return this._root;
     }
 
     constructor(entry : FileSystemEntry)
     {
         this._entry = entry;
-        this._root = new Directory(entry.isDirectory ? entry.name : "Empty root", [], []);
     }
 
-    private buildRoot(currEntry : FileSystemEntry, currRoot: Directory) : void
+    private async buildRoot(currEntry: FileSystemEntry): Promise<Directory> 
     {
+        const currRoot = new Directory(currEntry.name, [], []);
+      
         if (currEntry.isDirectory) 
         {
-            const subDir = new Directory(currEntry.name, [], []);
             const dirReader = (currEntry as FileSystemDirectoryEntry).createReader();
-
-            currRoot.subDirectories.push(subDir);
-      
-            dirReader.readEntries((entries) => {
-                if (entries.length !== 0) 
-                { 
-                    entries.forEach((entry) => { this.buildRoot(entry, subDir); });
+        
+            dirReader.readEntries(async (entries) => {
+                for (const entry of entries) 
+                {
+                    if (entry.isDirectory) 
+                    {
+                        currRoot.subDirectories.push(await this.buildRoot(entry));
+                    } 
+                    else 
+                    {
+                        currRoot.files.push(await this.readFile(entry as FileSystemFileEntry));
+                    }
                 }
             });
-        }
-        else
+        } 
+        else 
         {
-            const fileEntry = (currEntry as FileSystemFileEntry);
-            const reader = new FileReader();
-      
-            fileEntry.file((file : globalThis.File) => {
-      
-                reader.onload = () => {
-                    currRoot.files.push(new File(fileEntry.name, reader.result as string));
-                };
-      
-                reader.readAsText(file);
-            });
+            currRoot.files.push(await this.readFile(currEntry as FileSystemFileEntry));
         }
+      
+        return currRoot;
+    }
+
+    private async readFile(entry: FileSystemFileEntry): Promise<File> 
+    {
+        const reader = new FileReader();
+        
+        entry.file((file) => { reader.readAsText(file); });
+
+        return await new Promise((resolve) => { reader.onload = () => { resolve(new File(entry.name, reader.result as string)); }; });
     }
 }
