@@ -1,33 +1,41 @@
 import React, { Dispatch, SetStateAction, DragEvent } from "react";
 import "../styles/dropzone.css";
-import { LocalRootCreator } from "../classes/VirtualFilesSystem/LocalRootCreator";
-import VirtualFileSystemInstance from "../classes/VirtualFilesSystem/VirtualFileSystemInstance";
+import { RootBuilder } from "../classes/VirtualFilesSystem/RootBuilder";
 import LocalStorageWorker from "../classes/VirtualFilesSystem/LocalStorageWorker";
 
-function Inputs(props : { setRenderState : Dispatch<SetStateAction<boolean>> })
+function Inputs(props : { setStructureState : Dispatch<SetStateAction<boolean>> })
 {
+    async function updateRoot() 
+	{
+		return await new Promise((resolve) =>
+		{
+			resolve(RootBuilder.updateRoot());
+		});
+	}
+
     const inputHandler = async (event : DragEvent<HTMLDivElement>) => 
     {
         event.preventDefault();
 
-        const item : FileSystemEntry | null = event.dataTransfer.items[0].webkitGetAsEntry();
+        const newEntry : FileSystemEntry | null = event.dataTransfer.items[0].webkitGetAsEntry();
 
-        if (item)
+        if (newEntry)
         { 
-            let rootCreator : LocalRootCreator = new LocalRootCreator(item);
-            VirtualFileSystemInstance.root = await rootCreator.newRoot();
-            props.setRenderState((prevState) => !prevState); 
+            //props.setStructureState(false);
+            RootBuilder.entry = newEntry;
+            //RootBuilder.updateRoot();
+            updateRoot().then(() => props.setStructureState(false));
         }
     }
 
     return(
         <div>
-            <div draggable id="dropzone" onDrop={async (event) => await inputHandler(event)} onDragOver={(event) => { event.preventDefault(); }}>
+            <div draggable id="dropzone" onDrop={inputHandler} onDragOver={(event) => { event.preventDefault(); }}>
                 <div>Drop Files Here</div>
             </div>
 
             <button onClick={() => LocalStorageWorker.saveProject()}>Save project</button>
-            <button onClick={() => {props.setRenderState((prevState) => !prevState)}}>Update state</button>
+            <button onClick={() => {}}>Update state</button>
             <button onClick={() => {}}>Add folder</button>
         </div>
     );
