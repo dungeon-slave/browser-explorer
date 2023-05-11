@@ -12,7 +12,7 @@ export class RootBuilder
         RootBuilder._entry = entry;
     }
 
-    public static updateRoot() : void
+    public static async updateRoot() : Promise<void>
     {
         if (RootBuilder._entry === undefined) 
         {
@@ -33,7 +33,8 @@ export class RootBuilder
         }
         else
         {
-            RootBuilder.buildRootFromEntry(RootBuilder._entry).then((result) => {VirtualFileSystemInstance.root = result});
+            const root = await RootBuilder.buildRootFromEntry(RootBuilder._entry)
+            VirtualFileSystemInstance.root = root
         }
 
         return;
@@ -52,19 +53,22 @@ export class RootBuilder
         {
             const dirReader = (currEntry as FileSystemDirectoryEntry).createReader();
         
-            dirReader.readEntries(async (entries) => {
-                for (const entry of entries) 
-                {
-                    if (entry.isDirectory) 
+            await new Promise<void>(resolve => {
+                dirReader.readEntries(async (entries) => {
+                    for (const entry of entries) 
                     {
-                        currRoot.subDirectories.push(await RootBuilder.buildRootFromEntry(entry));
-                    } 
-                    else 
-                    {
-                        currRoot.files.push(await RootBuilder.readFile(entry as FileSystemFileEntry));
+                        if (entry.isDirectory) 
+                        {
+                            currRoot.subDirectories.push(await RootBuilder.buildRootFromEntry(entry));
+                        } 
+                        else 
+                        {
+                            currRoot.files.push(await RootBuilder.readFile(entry as FileSystemFileEntry));
+                        }
                     }
-                }
-            });
+                    resolve()
+                });
+            })
         } 
         else 
         {

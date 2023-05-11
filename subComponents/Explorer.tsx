@@ -10,10 +10,7 @@ function Explorer()
 
 	async function updateRoot() 
 	{
-		return await new Promise((resolve) =>
-		{
-			resolve(RootBuilder.updateRoot());
-		});
+		await RootBuilder.updateRoot();
 	}
 
 	useEffect(() => 

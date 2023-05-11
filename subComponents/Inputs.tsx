@@ -7,10 +7,7 @@ function Inputs(props : { setStructureState : Dispatch<SetStateAction<boolean>> 
 {
     async function updateRoot() 
 	{
-		return await new Promise((resolve) =>
-		{
-			resolve(RootBuilder.updateRoot());
-		});
+        await RootBuilder.updateRoot();
 	}
 
     const inputHandler = async (event : DragEvent<HTMLDivElement>) => 
@@ -24,7 +21,8 @@ function Inputs(props : { setStructureState : Dispatch<SetStateAction<boolean>> 
             //props.setStructureState(false);
             RootBuilder.entry = newEntry;
             //RootBuilder.updateRoot();
-            updateRoot().then(() => props.setStructureState(false));
+            await updateRoot()
+            props.setStructureState(false)
         }
     }
 

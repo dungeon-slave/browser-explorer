@@ -51,16 +51,16 @@ function ExplorerStructure(props : { structureState : boolean, setStructureState
         }
     };
 
-    useEffect(() => {
-        setTimeout(() => 
-        {
-            props.setStructureState(true);
-        }, 100);
-    })
+    // useEffect(() => {
+    //     setTimeout(() => 
+    //     {
+    //         props.setStructureState(true);
+    //     }, 100);
+    // })
     
     return (
         <div className="ExplorerStructure">
-            {props.structureState && draw()}
+            {!props.structureState && draw()}
         </div>
     );
 }
