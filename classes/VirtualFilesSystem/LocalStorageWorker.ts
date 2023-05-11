@@ -11,8 +11,15 @@ export default class LocalStorageWorker
         }        
     }
 
-    public static loadProject() : void
+    public static loadProject() : Directory
     {
-        VirtualFileSystemInstance.root = Object.setPrototypeOf(JSON.parse(localStorage.getItem('VirtualFS') || '{}'), Directory.prototype);
+        try 
+        {
+            return Object.setPrototypeOf(JSON.parse(localStorage.getItem('VirtualFS')!), Directory.prototype);
+        } 
+        catch (error) 
+        {
+            throw new Error("Empty local storage");
+        }
     }
 }
