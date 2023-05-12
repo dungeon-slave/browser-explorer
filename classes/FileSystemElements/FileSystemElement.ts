@@ -1,9 +1,10 @@
 export class FileSystemElement
 {
-    constructor(name : string, isDirectory : boolean)
+    constructor(name : string, isDirectory : boolean, path : string)
     {
-        this._isDirectory = isDirectory;
         this._name = name;
+        this._isDirectory = isDirectory;
+        this._path = path;
     }
 
     private _name : string;
@@ -13,9 +14,9 @@ export class FileSystemElement
         return this._name;
     }
 
-    public set name(value : string) 
+    public set name(newName : string) 
     {
-        this._name = value;
+        this._name = newName;
     }
 
     private _isDirectory : boolean;
@@ -25,8 +26,15 @@ export class FileSystemElement
         return this._isDirectory;
     }
 
-    public set isDirectory(value : boolean)
+    private _path : string;
+
+    public get path() : string
     {
-        this._isDirectory = value;
+        return this._path;
+    }
+    
+    public set path(newPath: string)
+    {
+        this._path = newPath;
     }
 }

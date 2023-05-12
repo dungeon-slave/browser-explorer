@@ -14,9 +14,9 @@ export default class File extends FileSystemElement
         this._text = value;
     }
 
-    constructor(name : string, text : string)
+    constructor(name : string, text : string, path : string)
     {
-        super(name, false);
+        super(name, false, path);
         this._text = text;
     }
 }
