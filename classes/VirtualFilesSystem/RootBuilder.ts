@@ -12,42 +12,51 @@ export class RootBuilder
         RootBuilder._entry = entry;
     }
 
-    public static async updateRoot() : Promise<void>
+    public static async updateRoot() : Promise<boolean>
     {
-        if (RootBuilder._entry === undefined) 
+        try 
         {
-            if (VirtualFileSystemInstance.root === undefined) 
+            let newRoot : Directory;
+
+            if (RootBuilder._entry === undefined) 
             {
-                try 
+                if (VirtualFileSystemInstance.root === undefined) 
                 {
-                    VirtualFileSystemInstance.root = LocalStorageWorker.loadProject();
-                } 
-                catch (error) 
-                {
-                    if ((error as Error).message === "Empty local storage") 
+                    try 
                     {
-                        RootBuilder.buildEmptyRoot(); 
+                        newRoot = await LocalStorageWorker.loadProject();
+                    } 
+                    catch (error) 
+                    {
+                        if ((error as Error).message === "Empty local storage") 
+                        {
+                            newRoot = await RootBuilder.buildEmptyRoot(); 
+                        }
                     }
                 }
             }
-        }
-        else
+            else
+            {
+                newRoot = await RootBuilder.buildRootFromEntry(RootBuilder._entry);
+            }
+    
+            VirtualFileSystemInstance.root = newRoot!;
+            return true; 
+        } 
+        catch (error) 
         {
-            const root = await RootBuilder.buildRootFromEntry(RootBuilder._entry)
-            VirtualFileSystemInstance.root = root
+            return false;
         }
-
-        return;
     }
 
-    private static buildEmptyRoot()
+    private static async buildEmptyRoot() : Promise<Directory>
     {
-        VirtualFileSystemInstance.root = new Directory("empty root", [], []);
+        return new Directory("empty root", [], [], "/empty_root");
     }
 
     private static async buildRootFromEntry(currEntry: FileSystemEntry): Promise<Directory> 
     {
-        const currRoot = new Directory(currEntry.name, [], []);
+        const currRoot = new Directory(currEntry.name, [], [], currEntry.fullPath);
       
         if (currEntry.isDirectory) 
         {
@@ -59,20 +68,20 @@ export class RootBuilder
                     {
                         if (entry.isDirectory) 
                         {
-                            currRoot.subDirectories.push(await RootBuilder.buildRootFromEntry(entry));
+                            currRoot.addDirectory(await RootBuilder.buildRootFromEntry(entry));
                         } 
                         else 
                         {
-                            currRoot.files.push(await RootBuilder.readFile(entry as FileSystemFileEntry));
+                            currRoot.addFile(await RootBuilder.readFile(entry as FileSystemFileEntry));
                         }
                     }
-                    resolve()
+                    resolve();
                 });
             })
         } 
         else 
         {
-            currRoot.files.push(await RootBuilder.readFile(currEntry as FileSystemFileEntry));
+            currRoot.addFile(await RootBuilder.readFile(currEntry as FileSystemFileEntry));
         }
       
         return currRoot;
@@ -84,6 +93,6 @@ export class RootBuilder
         
         entry.file((file) => { reader.readAsText(file); });
 
-        return await new Promise((resolve) => { reader.onload = () => { resolve(new File(entry.name, reader.result as string)); }; });
+        return await new Promise((resolve) => { reader.onload = () => { resolve(new File(entry.name, reader.result as string, entry.fullPath)); }; });
     }
 }
