@@ -5,24 +5,16 @@ import LocalStorageWorker from "../classes/VirtualFilesSystem/LocalStorageWorker
 
 function Inputs(props : { setStructureState : Dispatch<SetStateAction<boolean>> })
 {
-    async function updateRoot() 
-	{
-        await RootBuilder.updateRoot();
-	}
-
     const inputHandler = async (event : DragEvent<HTMLDivElement>) => 
     {
         event.preventDefault();
 
         const newEntry : FileSystemEntry | null = event.dataTransfer.items[0].webkitGetAsEntry();
 
-        if (newEntry)
+        if (newEntry !== null)
         { 
-            //props.setStructureState(false);
             RootBuilder.entry = newEntry;
-            //RootBuilder.updateRoot();
-            await updateRoot()
-            props.setStructureState(false)
+            props.setStructureState(false);
         }
     }
 
@@ -33,7 +25,7 @@ function Inputs(props : { setStructureState : Dispatch<SetStateAction<boolean>> 
             </div>
 
             <button onClick={() => LocalStorageWorker.saveProject()}>Save project</button>
-            <button onClick={() => {}}>Update state</button>
+            <button onClick={() => {}}>Add file</button>
             <button onClick={() => {}}>Add folder</button>
         </div>
     );
