@@ -1,14 +1,17 @@
-import React, { Dispatch, SetStateAction, useEffect } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import Directory from "../../classes/FileSystemElements/Directory";
 import { FileSystemElement } from "../../classes/FileSystemElements/FileSystemElement";
 import File from "../../classes/FileSystemElements/File";
 import VirtualFileSystemInstance from "../../classes/VirtualFilesSystem/VirtualFileSystemInstance";
 import DirectoryComponent from "./DirectoryComponent";
 import FileComponent from "./FileComponent";
+import { RootBuilder } from "../../classes/VirtualFilesSystem/RootBuilder";
 
 function ExplorerStructure(props : { structureState : boolean, setStructureState : Dispatch<SetStateAction<boolean>> }) 
 {
-    const draw = (): JSX.Element => 
+    const [selectState, setSelectState] = useState<boolean>(true);
+
+    const draw = () : JSX.Element => 
     {
         if (VirtualFileSystemInstance.root !== undefined)   
         {
@@ -23,9 +26,13 @@ function ExplorerStructure(props : { structureState : boolean, setStructureState
                 if (currentElement?.isDirectory) 
                 {
                     const dirElement = currentElement as Directory;
-                    //const divRef = useRef<HTMLDivElement>(null);
     
-                    elements.push(<DirectoryComponent name={dirElement.name} index={index++}/>);
+                    elements.push(<DirectoryComponent 
+                                        path={dirElement.path} 
+                                        index={index++} 
+                                        selectState={selectState} 
+                                        setSelectState={setSelectState}
+                                />);
     
                     dirElement.files.forEach((file: File) => {
                         stack.push(file);
@@ -37,11 +44,11 @@ function ExplorerStructure(props : { structureState : boolean, setStructureState
                 else 
                 {
                     const fileElement = currentElement as File;
-                    //const divRef = useRef<HTMLDivElement>(null);
     
-                    elements.push(<FileComponent name={fileElement.name} index={index++}/>);
+                    elements.push(<FileComponent path={fileElement.path} index={index++} selectState={selectState} setSelectState={setSelectState} text={fileElement.text}/>);
                 }
             } while (stack.length > 0);
+
 
             return <div>{elements}</div>;
         }
@@ -51,16 +58,20 @@ function ExplorerStructure(props : { structureState : boolean, setStructureState
         }
     };
 
-    // useEffect(() => {
-    //     setTimeout(() => 
-    //     {
-    //         props.setStructureState(true);
-    //     }, 100);
-    // })
+	useEffect(() => 
+	{
+		const asyncStateUpdate = async () =>
+		{
+			const isUpdated : boolean = await RootBuilder.updateRoot();
+			props.setStructureState(isUpdated);
+		}
+
+		asyncStateUpdate();
+	}, [props.structureState]);
     
     return (
         <div className="ExplorerStructure">
-            {!props.structureState && draw()}
+            {draw()}
         </div>
     );
 }
