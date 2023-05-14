@@ -1,6 +1,7 @@
 import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 
-function FileComponent(props: { path 		    : string, 
+function FileComponent(props: { 
+								path 		    : string, 
 								text 		    : string, 
 								index 		    : number, 
 								selectState     : boolean, 
@@ -19,8 +20,9 @@ function FileComponent(props: { path 		    : string,
 	const handleClick = () =>
 	{
 		setClickState(true);
-		props.setSelectState((prevState) => !prevState);
 		handledRef.current = true;//TODO Доделать передачу файла тханю
+
+		props.setSelectState((prevState) => !prevState);
 	}
 
 	const setName = () => 

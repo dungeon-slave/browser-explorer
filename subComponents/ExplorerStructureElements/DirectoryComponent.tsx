@@ -1,9 +1,11 @@
 import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 
-function DirectoryComponent(props: { path 			 	: string, 
+function DirectoryComponent(props: { 
+									 path 			 	: string, 
 									 index 			 	: number, 
 									 selectState 	 	: boolean, 
-									 setSelectState  	: Dispatch<SetStateAction<boolean>>
+									 setSelectState  	: Dispatch<SetStateAction<boolean>>,
+									 setHidedDirectories : Dispatch<SetStateAction<string[]>>,
 									})
 {
 	const divRef = useRef<HTMLDivElement>(null);
@@ -15,12 +17,31 @@ function DirectoryComponent(props: { path 			 	: string,
 	const pathElements : string[] = props.path.split('/');
 	const length 	   : number = pathElements.length - 1;
 
+	const changeHiding = () =>
+	{
+		props.setHidedDirectories((prevState) => 
+		{
+			const newState = prevState.filter(item => item !== props.path);
+
+			if (newState.length < prevState.length) 
+			{
+				return newState;	
+			}
+			else
+			{
+				prevState.push(props.path);
+				return prevState;
+			}
+		});
+	}
+
 	const handleClick = () =>
 	{
 		setClickState(true);
 		handledRef.current = true;
 
 		props.setSelectState((prevState) => !prevState);
+		changeHiding();
 	}
 
 	const setName = () => 
@@ -48,6 +69,19 @@ function DirectoryComponent(props: { path 			 	: string,
 		}
 		handledRef.current = false;
 	}, [props.selectState]);
+
+	// useEffect(() =>
+	// {
+	// 	if (length > props.hideLength) 
+	// 	{
+	// 		showingRef.current = false;
+	// 	}	
+	// 	else
+	// 	{
+	// 		props.setHiderPath("");
+	// 		showingRef.current = true;
+	// 	}
+	// }, [props.hideLength]);
 	
 	if (showingRef.current) 
 	{
