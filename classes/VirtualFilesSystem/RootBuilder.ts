@@ -18,26 +18,23 @@ export class RootBuilder
         {
             let newRoot : Directory;
 
-            if (RootBuilder._entry === undefined) 
+            if (RootBuilder._entry === undefined && VirtualFileSystemInstance.root === undefined) 
             {
-                if (VirtualFileSystemInstance.root === undefined) 
+                try 
                 {
-                    try 
+                    newRoot = await LocalStorageWorker.loadProject();
+                } 
+                catch (error) 
+                {
+                    if ((error as Error).message === "Empty local storage") 
                     {
-                        newRoot = await LocalStorageWorker.loadProject();
-                    } 
-                    catch (error) 
-                    {
-                        if ((error as Error).message === "Empty local storage") 
-                        {
-                            newRoot = await RootBuilder.buildEmptyRoot(); 
-                        }
+                        newRoot = await RootBuilder.buildEmptyRoot(); 
                     }
                 }
             }
             else
             {
-                newRoot = await RootBuilder.buildRootFromEntry(RootBuilder._entry);
+                newRoot = await RootBuilder.buildRootFromEntry(RootBuilder._entry!);
             }
     
             VirtualFileSystemInstance.root = newRoot!;

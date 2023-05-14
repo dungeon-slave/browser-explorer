@@ -9,9 +9,9 @@ export default class File extends FileSystemElement
         return this._text;
     }
     
-    public set text(value : string) 
+    public set text(newText : string) 
     {
-        this._text = value;
+        this._text = newText;
     }
 
     constructor(name : string, text : string, path : string)
