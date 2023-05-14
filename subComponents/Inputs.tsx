@@ -1,9 +1,13 @@
-import React, { Dispatch, SetStateAction, DragEvent } from "react";
+import React, { Dispatch, SetStateAction, DragEvent, useState } from "react";
 import "../styles/dropzone.css";
 import { RootBuilder } from "../classes/VirtualFilesSystem/RootBuilder";
 import LocalStorageWorker from "../classes/VirtualFilesSystem/LocalStorageWorker";
 
-function Inputs(props : { setStructureState : Dispatch<SetStateAction<boolean>> })
+function Inputs(props : { 
+                            setStructureState : Dispatch<SetStateAction<boolean>>,
+                            setCreatorStatus  : Dispatch<SetStateAction<boolean>>,
+                            setElementType    : Dispatch<SetStateAction<string>>
+                        })
 {
     const inputHandler = async (event : DragEvent<HTMLDivElement>) => 
     {
@@ -18,6 +22,12 @@ function Inputs(props : { setStructureState : Dispatch<SetStateAction<boolean>> 
         }
     }
 
+    const addElement = (elementType : string) =>
+    {
+        props.setCreatorStatus(true);
+        props.setElementType(elementType);
+    }
+
     return(
         <div>
             <div draggable id="dropzone" onDrop={inputHandler} onDragOver={(event) => { event.preventDefault(); }}>
@@ -25,8 +35,8 @@ function Inputs(props : { setStructureState : Dispatch<SetStateAction<boolean>> 
             </div>
 
             <button onClick={() => LocalStorageWorker.saveProject()}>Save project</button>
-            <button onClick={() => {}}>Add file</button>
-            <button onClick={() => {}}>Add folder</button>
+            <button onClick={() => addElement('file')}>Add file</button>
+            <button onClick={() => addElement('directory')}>Add directory</button>
         </div>
     );
 }

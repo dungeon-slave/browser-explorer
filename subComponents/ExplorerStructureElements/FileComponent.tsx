@@ -4,73 +4,40 @@ function FileComponent(props: {
 								path 		    : string, 
 								text 		    : string, 
 								index 		    : number, 
-								selectState     : boolean, 
-								setSelectState  : Dispatch<SetStateAction<boolean>>, 
+								selectState     : String, 
+								setSelectState  : Dispatch<SetStateAction<String>>
 							  })
 {
 	const divRef = useRef<HTMLDivElement>(null);
-	const handledRef = useRef<boolean>(false);
-	const showingRef = useRef<boolean>(true);
-	const [clickState, setClickState] = useState<boolean>(false);
 	
-	const color        : string = clickState ? '#efd777' : '#f5f5f5';
+	const isSelected   : boolean = props.path === props.selectState.valueOf();
+	const color        : string = isSelected ? '#efd777' : '#f5f5f5';
 	const pathElements : string[] = props.path.split('/');
 	const length 	   : number = pathElements.length - 1;
 
 	const handleClick = () =>
 	{
-		setClickState(true);
-		handledRef.current = true;//TODO Доделать передачу файла тханю
-
-		props.setSelectState((prevState) => !prevState);
+		props.setSelectState(new String(props.path));
 	}
 
 	const setName = () => 
 	{
-		return setIndent(length) + pathElements[length];
+		return pathElements[length];
 	}
-
-	const setIndent = (count : number) : string =>
-	{
-		let indent : string = "";
-
-		for (let i = 0; i < count; i++) 
-		{
-			indent += "- - ";
-		}
-
-		return indent;
-	}
-
-	useEffect(() =>
-	{
-		if (!handledRef.current) 
-		{
-			setClickState(false);	
-		}
-		handledRef.current = false;
-	}, [props.selectState]);
 	
-	if (showingRef.current) 
-	{
-		return(
-			<div  
-				key={props.index} 
-				onClick={handleClick} 
-				//onFocus={handleClick}
-				ref={divRef} 
-				tabIndex={props.index}
-				style={{ backgroundColor: color }}>
-	
-				<p>{setName()}</p>
-			
-			</div>
-		);
-	}
-	else
-	{
-		return(<div></div>);
-	}
+	return(
+		<div  
+			key={props.index} 
+			onClick={handleClick} 
+			//onFocus={handleClick}
+			ref={divRef} 
+			tabIndex={props.index}
+			style={{ backgroundColor: color, paddingLeft: 10 * length }}>
+
+			<p>{setName()}</p>
+		
+		</div>
+	);
 }
 
 export default FileComponent;

@@ -1,19 +1,21 @@
 import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import ElementCreator from "./ElementCreator";
 
 function DirectoryComponent(props: { 
-									 path 			 	: string, 
-									 index 			 	: number, 
-									 selectState 	 	: boolean, 
-									 setSelectState  	: Dispatch<SetStateAction<boolean>>,
-									 setHidedDirectories : Dispatch<SetStateAction<string[]>>,
+										path 			 	: string, 
+										index 			 	: number, 
+										selectState 	 	: String, 
+										setSelectState  	: Dispatch<SetStateAction<String>>,
+										setHidedDirectories : Dispatch<SetStateAction<string[]>>,
+										creatorState		: boolean,
+										setCretorState		: Dispatch<SetStateAction<boolean>>,
+										elementType			: string
 									})
 {
 	const divRef = useRef<HTMLDivElement>(null);
-	const handledRef = useRef<boolean>(false);
-	const showingRef = useRef<boolean>(true);
-	const [clickState, setClickState] = useState<boolean>(false);
 	
-	const color        : string = clickState ? '#efd777' : '#f5f5f5';
+	const isSelected   : boolean = props.path === props.selectState.valueOf();
+	const color        : string = isSelected ? '#efd777' : '#f5f5f5';
 	const pathElements : string[] = props.path.split('/');
 	const length 	   : number = pathElements.length - 1;
 
@@ -29,80 +31,47 @@ function DirectoryComponent(props: {
 			}
 			else
 			{
-				prevState.push(props.path);
-				return prevState;
+				newState.push(props.path);
+				return newState;
 			}
 		});
 	}
 
 	const handleClick = () =>
 	{
-		setClickState(true);
-		handledRef.current = true;
-
-		props.setSelectState((prevState) => !prevState);
+		props.setSelectState(new String(props.path));
+		if (props.creatorState) 
+		{
+			props.setCretorState(false);
+		}
 		changeHiding();
 	}
 
 	const setName = () => 
 	{
-		return setIndent(length) + pathElements[length];
+		return pathElements[length];
 	}
-
-	const setIndent = (count : number) : string =>
-	{
-		let indent : string = "";
-
-		for (let i = 0; i < count; i++) 
-		{
-			indent += "- - ";
-		}
-
-		return indent;
-	}
-
-	useEffect(() =>
-	{
-		if (!handledRef.current) 
-		{
-			setClickState(false);	
-		}
-		handledRef.current = false;
-	}, [props.selectState]);
-
-	// useEffect(() =>
-	// {
-	// 	if (length > props.hideLength) 
-	// 	{
-	// 		showingRef.current = false;
-	// 	}	
-	// 	else
-	// 	{
-	// 		props.setHiderPath("");
-	// 		showingRef.current = true;
-	// 	}
-	// }, [props.hideLength]);
 	
-	if (showingRef.current) 
-	{
-		return(
-			<div  
-				key={props.index} 
-				onClick={handleClick} 
-				//onFocus={handleClick}
-				ref={divRef} 
-				tabIndex={props.index}
-				style={{ backgroundColor: color }}>
-	
-				<p>{setName()}</p>
-			
+	return(
+			<div>
+				<div
+					key={props.index} 
+					onClick={handleClick} 
+					//onFocus={handleClick}
+					ref={divRef} 
+					tabIndex={props.index}
+					style={{ backgroundColor: color, paddingLeft: 10 * length }}>
+
+					<p>{setName()}</p>
+
+				</div>
+				
+				{isSelected && props.creatorState && <ElementCreator 
+														path={props.path} 
+														elementType={props.elementType} 
+														setCreatorState={props.setCretorState}/>}
 			</div>
-		);
-	}
-	else
-	{
-		return(<div></div>);
-	}
+	);
 }
 
 export default DirectoryComponent;

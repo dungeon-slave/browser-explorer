@@ -14,9 +14,28 @@ export class VirtualFileSystemUpdater extends VirtualFileSystemInstance
 
     }
 
-    public addDirectory()
+    public static addDirectory(parentFolderPath : string, fileName : string)
     {
+        let foldersWay : string[] = parentFolderPath.split('/').filter(item => item !== VirtualFileSystemInstance.root.name);
+        let currDirectory : Directory = VirtualFileSystemInstance.root;
 
+        while (foldersWay.length > 0) 
+        {
+            const nextDirectory = currDirectory.subDirectories.find((element) => 
+            {
+                if (element !== undefined) 
+                {
+                    return element.name === foldersWay[0];
+                }
+            });
+            if (nextDirectory !== undefined) 
+            {
+                currDirectory = nextDirectory; 
+            }
+            foldersWay.shift();
+        }
+
+        currDirectory.addDirectory(new Directory(fileName, [], [], parentFolderPath + '/' + fileName));
     }
 
     public removeDirectory()

@@ -7,9 +7,15 @@ import DirectoryComponent from "./DirectoryComponent";
 import FileComponent from "./FileComponent";
 import { RootBuilder } from "../../classes/VirtualFilesSystem/RootBuilder";
 
-function ExplorerStructure(props : { structureState : boolean, setStructureState : Dispatch<SetStateAction<boolean>> }) 
+function ExplorerStructure(props : { 
+                                        structureState    : boolean, 
+                                        setStructureState : Dispatch<SetStateAction<boolean>>,
+                                        creatorState      : boolean,
+                                        setCreatorState   : Dispatch<SetStateAction<boolean>>,
+                                        elementType       : string
+                                    }) 
 {
-    const [selectState, setSelectState] = useState<boolean>(true);
+    const [selectState, setSelectState] = useState<String>(new String(""));
     const [hidedDirectories, setHidedDirectories] = useState<string[]>([]);
     const [structure, setStructure] = useState<JSX.Element>();
 
@@ -43,6 +49,9 @@ function ExplorerStructure(props : { structureState : boolean, setStructureState
                                         selectState={selectState} 
                                         setSelectState={setSelectState}
                                         setHidedDirectories={setHidedDirectories}
+                                        creatorState={props.creatorState}
+                                        setCretorState={props.setCreatorState}
+                                        elementType={props.elementType}
                                 />);
     
                     dirElement.files.forEach((file: File) => {
@@ -102,7 +111,7 @@ function ExplorerStructure(props : { structureState : boolean, setStructureState
         }
 
         asyncReDraw();
-    }, [selectState]);
+    }, [selectState, props.creatorState]);
 
 	useEffect(() => 
 	{
