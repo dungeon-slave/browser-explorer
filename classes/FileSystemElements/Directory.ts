@@ -10,6 +10,11 @@ export default class Directory extends FileSystemElement
         return this._files;
     }
 
+    public set files(newFiles : File[])
+    {
+        this._files = newFiles;
+    }
+
     public addFile(newFile: File) 
     {
         this._files.push(newFile);
@@ -20,6 +25,11 @@ export default class Directory extends FileSystemElement
     public get subDirectories() : Directory[] 
     {
         return this._subDirectories;
+    }
+
+    public set subDirectories(newSubDirectories : Directory[])
+    {
+        this._subDirectories = newSubDirectories;
     }
 
     public addDirectory(newDirectory : Directory) 
