@@ -59,7 +59,7 @@ function DirectoryComponent(props: {
 
 	const setName = () => 
 	{
-		return pathElements[length];
+		return " - " + pathElements[length];
 	}
 	
 	return(
@@ -68,7 +68,6 @@ function DirectoryComponent(props: {
 					key={props.index} 
 					onClick={handleClick} 
 					onKeyDown={handleKeyDown}
-					//onFocus={handleClick}
 					ref={divRef} 
 					tabIndex={props.index}
 					style={{ backgroundColor: color, paddingLeft: 10 * length }}>
