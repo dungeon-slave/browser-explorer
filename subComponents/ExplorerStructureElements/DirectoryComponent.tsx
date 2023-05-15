@@ -1,5 +1,6 @@
 import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import ElementCreator from "./ElementCreator";
+import { VirtualFileSystemUpdater } from "../../classes/VirtualFilesSystem/VirtualFileSystemUpdater";
 
 function DirectoryComponent(props: { 
 										path 			 	: string, 
@@ -47,6 +48,15 @@ function DirectoryComponent(props: {
 		changeHiding();
 	}
 
+	const handleKeyDown = (event : React.KeyboardEvent<HTMLDivElement>) =>
+	{
+		if (event.key === "Delete" && isSelected) 
+		{
+			VirtualFileSystemUpdater.removeDirectory(props.path);
+			props.setSelectState(new String(""));
+		}
+	}
+
 	const setName = () => 
 	{
 		return pathElements[length];
@@ -57,6 +67,7 @@ function DirectoryComponent(props: {
 				<div
 					key={props.index} 
 					onClick={handleClick} 
+					onKeyDown={handleKeyDown}
 					//onFocus={handleClick}
 					ref={divRef} 
 					tabIndex={props.index}

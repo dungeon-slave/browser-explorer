@@ -1,9 +1,13 @@
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import React from "react";
 import Inputs from "./Inputs";
 import ExplorerStructure from "./ExplorerStructureElements/ExplorerStructure";
+//import { fileInstance } from "../../editor/App";
 
-function Explorer() 
+function Explorer( props: { 
+//	setSharedFiles: Dispatch<SetStateAction<fileInstance | undefined>>,
+//	sharedFiles: fileInstance | undefined
+}) 
 {
 	const [structureState, setStructureState] = useState<boolean>(true);
 	const [creatorState, setCreatorState] = useState<boolean>(false);
@@ -14,14 +18,18 @@ function Explorer()
 			<Inputs 
 				setStructureState={setStructureState} 
 				setCreatorStatus={setCreatorState}
-				setElementType={setElementType}/>
+				setElementType={setElementType}
+			/>
 
 			<ExplorerStructure 
 				structureState={structureState}
 				setStructureState={setStructureState} 
 				creatorState={creatorState} 
 				setCreatorState={setCreatorState} 
-				elementType={elementType}/>
+				elementType={elementType}
+//				setSharedFiles={props.setSharedFiles}
+//				sharedFiles={props.sharedFiles}
+			/>
 		</div>
 	);		
 }

@@ -1,18 +1,21 @@
 import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
-import Directory from "../../classes/FileSystemElements/Directory";
-import { FileSystemElement } from "../../classes/FileSystemElements/FileSystemElement";
-import File from "../../classes/FileSystemElements/File";
-import VirtualFileSystemInstance from "../../classes/VirtualFilesSystem/VirtualFileSystemInstance";
 import DirectoryComponent from "./DirectoryComponent";
 import FileComponent from "./FileComponent";
+import VirtualFileSystemInstance from "../../classes/VirtualFilesSystem/VirtualFileSystemInstance";
+import Directory from "../../classes/FileSystemElements/Directory";
+import File from "../../classes/FileSystemElements/File";
+import { FileSystemElement } from "../../classes/FileSystemElements/FileSystemElement";
 import { RootBuilder } from "../../classes/VirtualFilesSystem/RootBuilder";
+//import { fileInstance } from "../../../editor/App";
 
 function ExplorerStructure(props : { 
                                         structureState    : boolean, 
                                         setStructureState : Dispatch<SetStateAction<boolean>>,
                                         creatorState      : boolean,
                                         setCreatorState   : Dispatch<SetStateAction<boolean>>,
-                                        elementType       : string
+                                        elementType       : string,
+  //                                      setSharedFiles    : Dispatch<SetStateAction<fileInstance | undefined>>,
+   //                                     sharedFiles       : fileInstance | undefined
                                     }) 
 {
     const [selectState, setSelectState] = useState<String>(new String(""));
@@ -79,6 +82,8 @@ function ExplorerStructure(props : {
                                         selectState={selectState} 
                                         text={fileElement.text}
                                         setSelectState={setSelectState} 
+                                       // setSharedFiles={props.setSharedFiles}
+                                        //sharedFiles={props.sharedFiles}
                                 />);
                 }
 
