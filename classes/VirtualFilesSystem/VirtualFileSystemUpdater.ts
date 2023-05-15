@@ -35,7 +35,7 @@ export class VirtualFileSystemUpdater extends VirtualFileSystemInstance
 
         if (isUniqueDirName) 
         {
-            parentDirectory.addDirectory(new Directory(fileName, [], [], parentFolderPath + '/' + fileName));
+            parentDirectory.addFile(new File(fileName, "", parentFolderPath + '/' + fileName));
         }
     }
 
