@@ -17,15 +17,26 @@ export class VirtualFileSystemUpdater extends VirtualFileSystemInstance
     public static addDirectory(parentFolderPath : string, dirName : string)
     {
         const pathParts = parentFolderPath.split('/').filter(item => item !== VirtualFileSystemInstance.root.name);
+        const parentDirectory = this.getParentDirectory(pathParts);
+        const isUniqueDirName = parentDirectory.subDirectories.filter((item) => {return item.name !== dirName}).length === parentDirectory.subDirectories.length;
 
-        this.getParentDirectory(pathParts).addDirectory(new Directory(dirName, [], [], parentFolderPath + '/' + dirName));
+        if (isUniqueDirName) 
+        {
+            parentDirectory.addDirectory(new Directory(dirName, [], [], parentFolderPath + '/' + dirName));
+        }
     }
 
     public static addFile(parentFolderPath : string, fileName : string)
     {
         const pathParts = parentFolderPath.split('/').filter(item => item !== VirtualFileSystemInstance.root.name);
+        const parentDirectory = this.getParentDirectory(pathParts);
+        const isUniqueDirName = parentDirectory.files.filter((item) => {return item.name !== fileName}).length === parentDirectory.files.length;
 
-        this.getParentDirectory(pathParts).addFile(new File(fileName, "", parentFolderPath + '/' + fileName));
+
+        if (isUniqueDirName) 
+        {
+            parentDirectory.addDirectory(new Directory(fileName, [], [], parentFolderPath + '/' + fileName));
+        }
     }
 
     public static removeFile(path : string) : void

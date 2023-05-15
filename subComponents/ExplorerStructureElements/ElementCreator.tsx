@@ -30,8 +30,8 @@ function ElementCreator(props : {
 	return(
 		<div className="Element creator">
 			<input type="text" id="ElCreatorInput"></input>
-			<button onClick={cancelInputHandler}>Cancel</button>
 			<button onClick={okeyInputHandler}>Okay</button>
+			<button onClick={cancelInputHandler}>Cancel</button>
 		</div>
 	);
 }
