@@ -18,9 +18,8 @@ export class VirtualFileSystemUpdater extends VirtualFileSystemInstance
     {
         const pathParts = parentFolderPath.split('/').filter(item => item !== VirtualFileSystemInstance.root.name);
         const parentDirectory = this.getParentDirectory(pathParts);
-        const isUniqueDirName = parentDirectory.subDirectories.filter((item) => {return item.name !== dirName}).length === parentDirectory.subDirectories.length;
 
-        if (isUniqueDirName) 
+        if (this.checkUniqueness(parentDirectory, dirName)) 
         {
             parentDirectory.addDirectory(new Directory(dirName, [], [], parentFolderPath + '/' + dirName));
         }
@@ -30,10 +29,8 @@ export class VirtualFileSystemUpdater extends VirtualFileSystemInstance
     {
         const pathParts = parentFolderPath.split('/').filter(item => item !== VirtualFileSystemInstance.root.name);
         const parentDirectory = this.getParentDirectory(pathParts);
-        const isUniqueDirName = parentDirectory.files.filter((item) => {return item.name !== fileName}).length === parentDirectory.files.length;
 
-
-        if (isUniqueDirName) 
+        if (this.checkUniqueness(parentDirectory, fileName)) 
         {
             parentDirectory.addFile(new File(fileName, "", parentFolderPath + '/' + fileName));
         }
@@ -88,6 +85,12 @@ export class VirtualFileSystemUpdater extends VirtualFileSystemInstance
         }
 
         return parentDirectory;
+    }
+
+    private static checkUniqueness(parentDirectory : Directory, elementName : string) : boolean
+    {
+        return (parentDirectory.files.filter((item) => {return item.name !== elementName}).length === parentDirectory.files.length)
+            && (parentDirectory.subDirectories.filter((item) => {return item.name !== elementName}).length === parentDirectory.subDirectories.length);
     }
 
     public changeFileText()
