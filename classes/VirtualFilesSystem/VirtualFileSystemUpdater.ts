@@ -4,7 +4,7 @@ import VirtualFileSystemInstance from "./VirtualFileSystemInstance";
 
 export class VirtualFileSystemUpdater extends VirtualFileSystemInstance
 {
-    public renameDirectory()
+    public static renameDirectory()
     {
 
     }
@@ -14,62 +14,69 @@ export class VirtualFileSystemUpdater extends VirtualFileSystemInstance
 
     }
 
-    public static addDirectory(parentFolderPath : string, fileName : string)
+    public static addDirectory(parentFolderPath : string, dirName : string)
     {
-        let foldersWay : string[] = parentFolderPath.split('/').filter(item => item !== VirtualFileSystemInstance.root.name);
-        let currDirectory : Directory = VirtualFileSystemInstance.root;
+        const pathParts = parentFolderPath.split('/').filter(item => item !== VirtualFileSystemInstance.root.name);
 
-        while (foldersWay.length > 0) 
-        {
-            const nextDirectory = currDirectory.subDirectories.find((element) => 
-            {
-                if (element !== undefined) 
-                {
-                    return element.name === foldersWay[0];
-                }
-            });
-            if (nextDirectory !== undefined) 
-            {
-                currDirectory = nextDirectory; 
-            }
-            foldersWay.shift();
-        }
-
-        currDirectory.addDirectory(new Directory(fileName, [], [], parentFolderPath + '/' + fileName));
-    }
-
-    public removeDirectory()
-    {
-
+        this.getParentDirectory(pathParts).addDirectory(new Directory(dirName, [], [], parentFolderPath + '/' + dirName));
     }
 
     public static addFile(parentFolderPath : string, fileName : string)
     {
-        let foldersWay : string[] = parentFolderPath.split('/').filter(item => item !== VirtualFileSystemInstance.root.name);
-        let currDirectory : Directory = VirtualFileSystemInstance.root;
+        const pathParts = parentFolderPath.split('/').filter(item => item !== VirtualFileSystemInstance.root.name);
 
-        while (foldersWay.length > 0) 
+        this.getParentDirectory(pathParts).addFile(new File(fileName, "", parentFolderPath + '/' + fileName));
+    }
+
+    public static removeFile(path : string) : void
+    {
+        const pathParts = path.split('/').filter(item => item !== VirtualFileSystemInstance.root.name);
+        const removableElement = pathParts[pathParts.length - 1];
+        pathParts.pop();
+        const parentDirectory = this.getParentDirectory(pathParts);
+        const newFiles : File[] = parentDirectory.files.filter((item) => { return item.name !== removableElement});
+
+        if (newFiles.length < parentDirectory.files.length) 
         {
-            const nextDirectory = currDirectory.subDirectories.find((element) => 
+            parentDirectory.files = newFiles;    
+        }
+    }
+
+    public static removeDirectory(path : string) : void
+    {
+        const pathParts = path.split('/').filter(item => item !== VirtualFileSystemInstance.root.name);
+        const removableElement = pathParts[pathParts.length - 1];
+        pathParts.pop();
+        const parentDirectory = this.getParentDirectory(pathParts);
+        const newSubDirectories : Directory[] = parentDirectory.subDirectories.filter((item) => { return item.name !== removableElement});
+
+        if (newSubDirectories.length < parentDirectory.subDirectories.length) 
+        {
+            parentDirectory.subDirectories = newSubDirectories;    
+        }
+    }
+
+    private static getParentDirectory(pathParts : string[]) : Directory
+    {
+        let parentDirectory : Directory = VirtualFileSystemInstance.root;
+
+        while (pathParts.length > 0) 
+        {
+            const nextDirectory = parentDirectory.subDirectories.find((element) => 
             {
                 if (element !== undefined) 
                 {
-                    return element.name === foldersWay[0];
+                    return element.name === pathParts[0];
                 }
             });
             if (nextDirectory !== undefined) 
             {
-                currDirectory = nextDirectory; 
+                parentDirectory = nextDirectory; 
             }
-            foldersWay.shift();
+            pathParts.shift();
         }
 
-        currDirectory.addFile(new File(fileName, "", parentFolderPath + '/' + fileName));
-    }
-
-    public removeFile()
-    {
-
+        return parentDirectory;
     }
 
     public changeFileText()
