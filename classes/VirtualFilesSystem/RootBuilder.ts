@@ -46,9 +46,9 @@ export class RootBuilder
         }
     }
 
-    private static async buildEmptyRoot() : Promise<Directory>
+    public static async buildEmptyRoot() : Promise<Directory>
     {
-        return new Directory("empty root", [], [], "/empty_root");
+        return new Directory("empty_root", [], [], "/empty_root");
     }
 
     private static async buildRootFromEntry(currEntry: FileSystemEntry): Promise<Directory> 
