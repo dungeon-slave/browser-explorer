@@ -6,10 +6,17 @@ export default class LocalStorageWorker
 {
     public static async saveProject() : Promise<void>
     {
-        if (await navigator.storage.persist()) 
+        try 
         {
-            localStorage.setItem('VirtualFS', JSON.stringify(VirtualFileSystemInstance.root));
-        }   
+            if (await navigator.storage.persist()) 
+            {
+                localStorage.setItem('VirtualFS', JSON.stringify(VirtualFileSystemInstance.root));
+            }   
+        } 
+        catch (error) 
+        {
+            alert("You have exceeded the maximum size available in localstorage, try to save something smaller.");
+        }
     }
 
     public static async loadProject() : Promise<Directory>
