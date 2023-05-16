@@ -1,5 +1,6 @@
 import Directory from "../FileSystemElements/Directory";
 import File from "../FileSystemElements/File";
+import { RootBuilder } from "./RootBuilder";
 import VirtualFileSystemInstance from "./VirtualFileSystemInstance";
 
 export class VirtualFileSystemUpdater extends VirtualFileSystemInstance
@@ -96,17 +97,25 @@ export class VirtualFileSystemUpdater extends VirtualFileSystemInstance
         }
     }
 
-    public static removeDirectory(path : string) : void
+    public static async removeDirectory(path : string) : Promise<void>
     {
-        const pathParts = path.split('/').filter(item => item !== VirtualFileSystemInstance.root.name);
+        const pathParts = path.split('/').filter((item) => {return item !== ""});;
         const removableElement = pathParts[pathParts.length - 1];
         pathParts.pop();
         const parentDirectory = this.getParentDirectory(pathParts);
-        const newSubDirectories : Directory[] = parentDirectory.subDirectories.filter((item) => { return item.name !== removableElement});
 
-        if (newSubDirectories.length < parentDirectory.subDirectories.length) 
+        if (removableElement === VirtualFileSystemInstance.root.name) 
         {
-            parentDirectory.subDirectories = newSubDirectories;    
+            VirtualFileSystemInstance.root = await RootBuilder.buildEmptyRoot();
+        }
+        else
+        {
+            const newSubDirectories : Directory[] = parentDirectory.subDirectories.filter((item) => { return item.name !== removableElement});
+
+            if (newSubDirectories.length < parentDirectory.subDirectories.length) 
+            {
+                parentDirectory.subDirectories = newSubDirectories;    
+            }
         }
     }
 
