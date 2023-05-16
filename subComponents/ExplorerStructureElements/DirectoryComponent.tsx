@@ -1,19 +1,20 @@
 import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
-import ElementCreator from "./ElementCreator";
+import InputService from "./InputService";
 import { VirtualFileSystemUpdater } from "../../classes/VirtualFilesSystem/VirtualFileSystemUpdater";
 
 function DirectoryComponent(props: { 
-										path 			 	: string, 
-										index 			 	: number, 
-										selectState 	 	: String, 
-										setSelectState  	: Dispatch<SetStateAction<String>>,
-										setHidedDirectories : Dispatch<SetStateAction<string[]>>,
-										creatorState		: boolean,
-										setCretorState		: Dispatch<SetStateAction<boolean>>,
-										elementType			: string
+										path 			 	 : string, 
+										index 			 	 : number, 
+										selectState 	 	 : String, 
+										inputServiceState	 : boolean,
+										operationType	     : string,
+										setSelectState  	 : Dispatch<SetStateAction<String>>,
+										setHidedDirectories  : Dispatch<SetStateAction<string[]>>,
+										setInputServiceState : Dispatch<SetStateAction<boolean>>
 									})
 {
 	const divRef = useRef<HTMLDivElement>(null);
+	const [renameTry, setRenameTry] = useState<boolean>(false);
 	
 	const isSelected   : boolean = props.path === props.selectState.valueOf();
 	const color        : string = isSelected ? '#efd777' : '#f5f5f5';
@@ -41,9 +42,9 @@ function DirectoryComponent(props: {
 	const handleClick = () =>
 	{
 		props.setSelectState(new String(props.path));
-		if (props.creatorState) 
+		if (props.inputServiceState) 
 		{
-			props.setCretorState(false);
+			props.setInputServiceState(false);
 		}
 		changeHiding();
 	}
@@ -55,13 +56,37 @@ function DirectoryComponent(props: {
 			VirtualFileSystemUpdater.removeDirectory(props.path);
 			props.setSelectState(new String(""));
 		}
+		if (event.code === 'F2' && isSelected) 
+		{
+			setRenameTry(true);
+			props.setInputServiceState(true);
+		}
 	}
+
+	useEffect(() =>
+	{
+		if (renameTry && !props.inputServiceState) 
+		{
+			setRenameTry(false);	
+		}
+	}, [props.inputServiceState]);
 
 	const setName = () => 
 	{
 		return " - " + pathElements[length];
 	}
 	
+	if (props.inputServiceState && isSelected && renameTry) 
+	{
+		return(
+			<InputService 
+				setServiceState={props.setInputServiceState} 
+				path={props.path} 
+				operationType={"RENAME DIRECTORY"}
+				prevName={pathElements[length]}
+			/>
+		);
+	}
 	return(
 			<div>
 				<div
@@ -76,10 +101,14 @@ function DirectoryComponent(props: {
 
 				</div>
 				
-				{isSelected && props.creatorState && <ElementCreator 
-														path={props.path} 
-														elementType={props.elementType} 
-														setCreatorState={props.setCretorState}/>}
+				{isSelected && props.inputServiceState && 
+				
+				<InputService 
+					path={props.path} 
+					operationType={props.operationType} 
+					setServiceState={props.setInputServiceState}
+					prevName={""}
+				/>}
 			</div>
 	);
 }

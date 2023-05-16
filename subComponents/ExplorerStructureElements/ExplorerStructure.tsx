@@ -6,16 +6,16 @@ import Directory from "../../classes/FileSystemElements/Directory";
 import File from "../../classes/FileSystemElements/File";
 import { FileSystemElement } from "../../classes/FileSystemElements/FileSystemElement";
 import { RootBuilder } from "../../classes/VirtualFilesSystem/RootBuilder";
-//import { fileInstance } from "../../../editor/App";
+// import { fileInstance } from "../../../editor/App";
 
 function ExplorerStructure(props : { 
-                                        structureState    : boolean, 
-                                        setStructureState : Dispatch<SetStateAction<boolean>>,
-                                        creatorState      : boolean,
-                                        setCreatorState   : Dispatch<SetStateAction<boolean>>,
-                                        elementType       : string,
-  //                                      setSharedFiles    : Dispatch<SetStateAction<fileInstance | undefined>>,
-   //                                     sharedFiles       : fileInstance | undefined
+                                        structureState       : boolean, 
+                                        operationType        : string,
+                                        inputServiceState    : boolean,
+                                    //    sharedFiles       : fileInstance | undefined,
+                                        setStructureState    : Dispatch<SetStateAction<boolean>>,
+                                        setInputServiceState : Dispatch<SetStateAction<boolean>>,
+                                    //    setSharedFiles    : Dispatch<SetStateAction<fileInstance | undefined>>
                                     }) 
 {
     const [selectState, setSelectState] = useState<String>(new String(""));
@@ -52,9 +52,9 @@ function ExplorerStructure(props : {
                                         selectState={selectState} 
                                         setSelectState={setSelectState}
                                         setHidedDirectories={setHidedDirectories}
-                                        creatorState={props.creatorState}
-                                        setCretorState={props.setCreatorState}
-                                        elementType={props.elementType}
+                                        inputServiceState={props.inputServiceState}
+                                        setInputServiceState={props.setInputServiceState}
+                                        operationType={props.operationType}
                                 />);
     
                     dirElement.files.forEach((file: File) => {
@@ -82,8 +82,10 @@ function ExplorerStructure(props : {
                                         selectState={selectState} 
                                         text={fileElement.text}
                                         setSelectState={setSelectState} 
-                                       // setSharedFiles={props.setSharedFiles}
-                                        //sharedFiles={props.sharedFiles}
+                                        creatorState={props.inputServiceState}
+                                        setCreatorState={props.setInputServiceState}
+                                    //    setSharedFiles={props.setSharedFiles}
+                                    //     sharedFiles={props.sharedFiles}
                                 />);
                 }
 
@@ -116,7 +118,7 @@ function ExplorerStructure(props : {
         }
 
         asyncReDraw();
-    }, [selectState, props.creatorState]);
+    }, [selectState, props.inputServiceState]);
 
 	useEffect(() => 
 	{

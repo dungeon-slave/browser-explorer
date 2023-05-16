@@ -35,8 +35,8 @@ function Inputs(props : {
             </div>
 
             <button onClick={() => LocalStorageWorker.saveProject()}>Save project</button>
-            <button onClick={() => addElement('file')}>Add file</button>
-            <button onClick={() => addElement('directory')}>Add directory</button>
+            <button onClick={() => addElement('ADD FILE')}>Add file</button>
+            <button onClick={() => addElement('ADD DIRECTORY')}>Add directory</button>
         </div>
     );
 }

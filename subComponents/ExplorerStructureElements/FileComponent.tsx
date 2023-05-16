@@ -1,15 +1,18 @@
 import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { VirtualFileSystemUpdater } from "../../classes/VirtualFilesSystem/VirtualFileSystemUpdater";
-//import { fileInstance } from "../../../editor/App";
+import InputService from "./InputService";
+// import { fileInstance } from "../../../editor/App";
 
 function FileComponent(props: { 
 								path 		    : string, 
 								text 		    : string, 
 								index 		    : number, 
 								selectState     : String, 
+								creatorState    : boolean,
+								// sharedFiles     : fileInstance | undefined,
 								setSelectState  : Dispatch<SetStateAction<String>>,
-								//setSharedFiles  : Dispatch<SetStateAction<fileInstance | undefined>>,
-								//sharedFiles     : fileInstance | undefined
+								setCreatorState	: Dispatch<SetStateAction<boolean>>
+								// setSharedFiles  : Dispatch<SetStateAction<fileInstance | undefined>>,
 							  })
 {
 	const divRef = useRef<HTMLDivElement>(null);
@@ -19,19 +22,6 @@ function FileComponent(props: {
 	const pathElements : string[] = props.path.split('/');
 	const length 	   : number = pathElements.length - 1;
 
-	// const setFiles = (currentFile: fileInstance):fileInstance[] => {
-	// 	let array: fileInstance[] = []
-	// 	for (let i = 0; i < props.sharedFiles.length; i++) {
-	// 		array.push(props.sharedFiles[i])
-	// 	}
-
-	// 	if (array.find( (item) => { return item.path === currentFile.path}) === undefined) {
-	// 		array.push(currentFile)
-	// 	}
-
-	// 	return array
-	// }
-
 	const handleClick = () =>
 	{
 		props.setSelectState(new String(props.path));
@@ -39,10 +29,9 @@ function FileComponent(props: {
 		// 	name: pathElements[length],
 		// 	path: props.path,
 		// 	value: props.text
-		// }
+		// };
 
-		// props.setSharedFiles(setFiles(currentFile))
-		//9props.setSharedFiles(currentFile)
+		// props.setSharedFiles(currentFile);
 	}
 
 	const handleKeyDown = (event : React.KeyboardEvent<HTMLDivElement>) =>
@@ -52,6 +41,10 @@ function FileComponent(props: {
 			VirtualFileSystemUpdater.removeFile(props.path);
 			props.setSelectState(new String(""));
 		}
+		if (event.code === 'F2' && isSelected) 
+		{
+			props.setCreatorState(true);
+		}
 	}
 
 	const setName = () => 
@@ -59,12 +52,22 @@ function FileComponent(props: {
 		return pathElements[length];
 	}
 	
+	if (props.creatorState && isSelected) 
+	{
+		return(
+			<InputService 
+				setServiceState={props.setCreatorState} 
+				path={props.path} 
+				operationType={"RENAME FILE"}
+				prevName={pathElements[length]}
+			/>
+		);
+	}
 	return(
 		<div  
 			key={props.index} 
 			onClick={handleClick} 
 			onKeyDown={handleKeyDown}
-			//onFocus={handleClick}
 			ref={divRef} 
 			tabIndex={props.index}
 			style={{ backgroundColor: color, paddingLeft: 10 * length }}>
