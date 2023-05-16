@@ -3,23 +3,69 @@ import File from "../FileSystemElements/File";
 import VirtualFileSystemInstance from "./VirtualFileSystemInstance";
 
 export class VirtualFileSystemUpdater extends VirtualFileSystemInstance
-{
-    public static renameDirectory()
+{     
+    public static renameDirectory(path : string, newName : string) 
     {
+        const pathParts = path.split('/').filter((item) => {return item !== ""});
+        const newPath = VirtualFileSystemUpdater.changePath(pathParts, newName);
+        const parentDirectory = VirtualFileSystemUpdater.getParentDirectory(pathParts);
 
+        if (VirtualFileSystemUpdater.checkUniqueness(parentDirectory, newName)) 
+        {
+            let currDirectory : Directory;
+
+            if (path === VirtualFileSystemInstance.root.path) 
+            {
+                currDirectory = VirtualFileSystemInstance.root;
+            }
+            else
+            {
+                for (let i = 0; i < parentDirectory.subDirectories.length; i++) 
+                {
+                    currDirectory = parentDirectory.subDirectories[i];
+                    if (currDirectory.path === path) 
+                    {
+                        break;
+                    }
+                }
+            }  
+
+            currDirectory!.path = newPath;
+            currDirectory!.name = newName;
+
+            VirtualFileSystemUpdater.updatePaths(currDirectory!, path, newPath);
+        } 
     }
 
-    public renameFile()
+    public static renameFile(path : string, newName : string)
     {
+        const pathParts = path.split('/');
+        const newPath = VirtualFileSystemUpdater.changePath(pathParts, newName);
+        pathParts.shift();
+        const parentDirectory = VirtualFileSystemUpdater.getParentDirectory(pathParts);
 
+        if (VirtualFileSystemUpdater.checkUniqueness(parentDirectory, newName)) 
+        {
+            for (let i = 0; i < parentDirectory.files.length; i++) 
+            {
+                const currFile = parentDirectory.files[i];
+                if (currFile.path === path) 
+                {
+                    currFile.path = newPath;
+                    currFile.name = newName;
+
+                    return;
+                }                
+            }
+        }
     }
 
     public static addDirectory(parentFolderPath : string, dirName : string)
     {
         const pathParts = parentFolderPath.split('/').filter(item => item !== VirtualFileSystemInstance.root.name);
-        const parentDirectory = this.getParentDirectory(pathParts);
+        const parentDirectory = VirtualFileSystemUpdater.getParentDirectory(pathParts);
 
-        if (this.checkUniqueness(parentDirectory, dirName)) 
+        if (VirtualFileSystemUpdater.checkUniqueness(parentDirectory, dirName)) 
         {
             parentDirectory.addDirectory(new Directory(dirName, [], [], parentFolderPath + '/' + dirName));
         }
@@ -28,9 +74,9 @@ export class VirtualFileSystemUpdater extends VirtualFileSystemInstance
     public static addFile(parentFolderPath : string, fileName : string)
     {
         const pathParts = parentFolderPath.split('/').filter(item => item !== VirtualFileSystemInstance.root.name);
-        const parentDirectory = this.getParentDirectory(pathParts);
+        const parentDirectory = VirtualFileSystemUpdater.getParentDirectory(pathParts);
 
-        if (this.checkUniqueness(parentDirectory, fileName)) 
+        if (VirtualFileSystemUpdater.checkUniqueness(parentDirectory, fileName)) 
         {
             parentDirectory.addFile(new File(fileName, "", parentFolderPath + '/' + fileName));
         }
@@ -41,7 +87,7 @@ export class VirtualFileSystemUpdater extends VirtualFileSystemInstance
         const pathParts = path.split('/').filter(item => item !== VirtualFileSystemInstance.root.name);
         const removableElement = pathParts[pathParts.length - 1];
         pathParts.pop();
-        const parentDirectory = this.getParentDirectory(pathParts);
+        const parentDirectory = VirtualFileSystemUpdater.getParentDirectory(pathParts);
         const newFiles : File[] = parentDirectory.files.filter((item) => { return item.name !== removableElement});
 
         if (newFiles.length < parentDirectory.files.length) 
@@ -63,6 +109,8 @@ export class VirtualFileSystemUpdater extends VirtualFileSystemInstance
             parentDirectory.subDirectories = newSubDirectories;    
         }
     }
+
+
 
     private static getParentDirectory(pathParts : string[]) : Directory
     {
@@ -93,8 +141,30 @@ export class VirtualFileSystemUpdater extends VirtualFileSystemInstance
             && (parentDirectory.subDirectories.filter((item) => {return item.name !== elementName}).length === parentDirectory.subDirectories.length);
     }
 
-    public changeFileText()
+    private static changePath(oldPathParts : string[], newName : string) : string
     {
+        let newPath : string = "";
 
+        oldPathParts[oldPathParts.length - 1] = newName;
+        for (let i = 0; i < oldPathParts.length; i++) 
+        {
+            newPath += "/" + oldPathParts[i];
+        }
+
+        return newPath;
+    }
+
+    private static updatePaths(directory : Directory, oldPath : string, newPath : string) 
+    {
+        for (let subDirectory of directory.subDirectories) 
+        {
+            subDirectory.path = subDirectory.path.replace(oldPath, newPath);
+            VirtualFileSystemUpdater.updatePaths(subDirectory, oldPath, newPath);
+        }
+
+        for (let file of directory.files) 
+        {
+            file.path = file.path.replace(oldPath, newPath);
+        }
     }
 }
