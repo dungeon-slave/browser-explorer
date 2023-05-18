@@ -9,10 +9,8 @@ function FileComponent(props: {
 								index 		    : number, 
 								selectState     : String, 
 								creatorState    : boolean,
-								// sharedFiles     : fileInstance | undefined,
 								setSelectState  : Dispatch<SetStateAction<String>>,
 								setCreatorState	: Dispatch<SetStateAction<boolean>>
-								// setSharedFiles  : Dispatch<SetStateAction<fileInstance | undefined>>,
 							  })
 {
 	const divRef = useRef<HTMLDivElement>(null);
@@ -25,13 +23,6 @@ function FileComponent(props: {
 	const handleClick = () =>
 	{
 		props.setSelectState(new String(props.path));
-		// const currentFile: fileInstance = {
-		// 	name: pathElements[length],
-		// 	path: props.path,
-		// 	value: props.text
-		// };
-
-		// props.setSharedFiles(currentFile);
 	}
 
 	const handleKeyDown = (event : React.KeyboardEvent<HTMLDivElement>) =>

@@ -1,13 +1,9 @@
-import { Dispatch, SetStateAction, useState } from "react";
+import { useState } from "react";
 import React from "react";
 import Inputs from "./Inputs";
 import ExplorerStructure from "./ExplorerStructureElements/ExplorerStructure";
-// import { fileInstance } from "../../editor/App";
 
-function Explorer( props: { 
-	// setSharedFiles: Dispatch<SetStateAction<fileInstance | undefined>>,
-	// sharedFiles: fileInstance | undefined
-}) 
+function Explorer() 
 {
 	const [structureState, setStructureState] = useState<boolean>(true);
 	const [inputServiceState, setInputServiceState] = useState<boolean>(false);
@@ -27,8 +23,6 @@ function Explorer( props: {
 				inputServiceState={inputServiceState} 
 				setInputServiceState={setInputServiceState} 
 				operationType={operationType}
-				// setSharedFiles={props.setSharedFiles}
-				// sharedFiles={props.sharedFiles}
 			/>
 		</div>
 	);		

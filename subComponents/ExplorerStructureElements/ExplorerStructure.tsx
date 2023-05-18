@@ -6,16 +6,13 @@ import Directory from "../../classes/FileSystemElements/Directory";
 import File from "../../classes/FileSystemElements/File";
 import { FileSystemElement } from "../../classes/FileSystemElements/FileSystemElement";
 import { RootBuilder } from "../../classes/VirtualFilesSystem/RootBuilder";
-// import { fileInstance } from "../../../editor/App";
 
 function ExplorerStructure(props : { 
                                         structureState       : boolean, 
                                         operationType        : string,
                                         inputServiceState    : boolean,
-                                    //    sharedFiles       : fileInstance | undefined,
                                         setStructureState    : Dispatch<SetStateAction<boolean>>,
                                         setInputServiceState : Dispatch<SetStateAction<boolean>>,
-                                    //    setSharedFiles    : Dispatch<SetStateAction<fileInstance | undefined>>
                                     }) 
 {
     const [selectState, setSelectState] = useState<String>(new String(""));
@@ -84,8 +81,6 @@ function ExplorerStructure(props : {
                                         setSelectState={setSelectState} 
                                         creatorState={props.inputServiceState}
                                         setCreatorState={props.setInputServiceState}
-                                    //    setSharedFiles={props.setSharedFiles}
-                                    //     sharedFiles={props.sharedFiles}
                                 />);
                 }
 
