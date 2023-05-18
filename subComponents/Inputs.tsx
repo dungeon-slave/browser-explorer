@@ -1,31 +1,44 @@
-import '../styles/Explorer.css';
-import * as React from "react";
-import { getDir } from '../scripts/FgetDirName';
+import React, { Dispatch, SetStateAction, DragEvent, useState } from "react";
+import "../styles/dropzone.css";
+import { RootBuilder } from "../classes/VirtualFilesSystem/RootBuilder";
+import LocalStorageWorker from "../classes/VirtualFilesSystem/LocalStorageWorker";
 
-function Inputs(props : {setTitle : any}) 
+function Inputs(props : { 
+                            setStructureState : Dispatch<SetStateAction<boolean>>,
+                            setCreatorStatus  : Dispatch<SetStateAction<boolean>>,
+                            setElementType    : Dispatch<SetStateAction<string>>
+                        })
 {
-  //------------------------------------------------------
-    // Используется для прокидывания атрибутов в инпут
-    // Данные атрибуты нужны для возможности загрузки целой папки
-    const ref = React.useRef<HTMLInputElement>(null);
-
-    React.useEffect(() => 
+    const inputHandler = async (event : DragEvent<HTMLDivElement>) => 
     {
-      if (ref.current !== null) {
-        ref.current.setAttribute("webkitdirectory", "");
-      }
-    }, [ref]);
-  //------------------------------------------------------
+        event.preventDefault();
 
-  return (
-    <div className="Inputs">
-      <input id="folderInput" type="file" onChange={() => props.setTitle(getDir)} ref={ref}/>
+        const newEntry : FileSystemEntry | null = event.dataTransfer.items[0].webkitGetAsEntry();
 
-      {/*<button onClick={() => props.setTitle(getDir)}>Open file/folder</button>*/}
-      <button /*onClick={}*/>Add file</button>
-      <button /*onClick={}*/>Add folder</button>
-    </div>
-  );
+        if (newEntry !== null)
+        { 
+            RootBuilder.entry = newEntry;
+            props.setStructureState(false);
+        }
+    }
+
+    const addElement = (elementType : string) =>
+    {
+        props.setCreatorStatus(true);
+        props.setElementType(elementType);
+    }
+
+    return(
+        <div>
+            <div draggable id="dropzone" onDrop={inputHandler} onDragOver={(event) => { event.preventDefault(); }}>
+                <div>Drop Files Here</div>
+            </div>
+
+            <button onClick={() => LocalStorageWorker.saveProject()}>Save project</button>
+            <button onClick={() => addElement('ADD FILE')}>Add file</button>
+            <button onClick={() => addElement('ADD DIRECTORY')}>Add directory</button>
+        </div>
+    );
 }
 
 export default Inputs;
